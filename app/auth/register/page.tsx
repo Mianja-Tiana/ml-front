@@ -184,7 +184,7 @@ export default function RegisterPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Username */}
+               
               <div>
               <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
                 <Users className="w-5 h-5" />
@@ -229,7 +229,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Password */}
+               
                 <div className="relative">
                   <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -352,7 +352,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Rôles */}
+          
               <div className="pt-6">
                 <label
                   className={`block text-sm font-semibold mb-4 drop-shadow-lg ${
@@ -408,7 +408,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Bouton Submit */}
+            
               <Button
                 type="submit"
                 disabled={loading}

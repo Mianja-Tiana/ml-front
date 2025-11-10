@@ -26,22 +26,35 @@ export default function LoginPage() {
 
     try {
       const requestBody = querystring.stringify(formData);
+
       const res = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
         body: requestBody,
       });
-      if (!res.ok) throw new Error("Invalid credentials");
+
+      if (!res.ok) {
+        throw new Error("Invalid credentials" + res.status);
+      }
+
       const data = await res.json();
       localStorage.setItem("token", data.access_token);
+
       const userRes = await fetch(`${apiUrl}/api/users/me`, {
         headers: { Authorization: `Bearer ${data.access_token}` },
       });
+
       if (userRes.ok) {
         const userData = await userRes.json();
-        const isAdmin = userData.roles?.some((r: any) => r.role?.name === "admin");
-        router.push(isAdmin ? "/dashboard/admin" : "/dashboard/user");
+        const isAdmin =
+          userData.roles &&
+          userData.roles.some((r: any) => r.role?.name === "admin");
+        const dashboard = isAdmin ? "/dashboard/admin" : "/dashboard/user";
+        router.push(dashboard);
       }
+      
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -57,7 +70,7 @@ export default function LoginPage() {
           : "bg-gradient-to-r from-blue-50 via-white to-blue-100"
       } overflow-hidden relative flex items-center justify-center p-4 transition-all duration-500`}
     >
-      {/* Arrière-plan animé */}
+      
       <div
         className={`absolute inset-0 ${
           isDarkMode
@@ -87,7 +100,7 @@ export default function LoginPage() {
         } rounded-full blur-2xl animate-spin-slow opacity-50`}
       ></div>
 
-      {/* Bouton Soleil / Lune */}
+      
       <button
         onClick={toggleMode}
         className={`absolute top-4 right-4 p-3 rounded-full ${
@@ -163,7 +176,7 @@ export default function LoginPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Username */}
+              
               <div>
                 <label
                   className={`block text-sm font-semibold ${
@@ -189,7 +202,7 @@ export default function LoginPage() {
                 />
               </div>
 
-              {/* Password */}
+              
               <div className="relative">
                 <label
                   className={`block text-sm font-semibold ${
