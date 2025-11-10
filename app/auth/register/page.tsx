@@ -105,7 +105,7 @@ export default function RegisterPage() {
       <button
         onClick={toggleMode}
         className={`absolute top-4 right-4 p-3 rounded-full ${
-          isDarkMode ? "bg-slate-800 text-yellow-400" : "bg-blue-200 text-blue-800"
+          isDarkMode ? "bg-slate-800 text-white-400" : "bg-blue-200 text-blue-800"
         } shadow-lg hover:shadow-xl transition-all duration-300 z-20`}
         aria-label="Toggle theme"
       >
@@ -185,90 +185,55 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Username */}
-                <div className="relative">
-                  <label
-                    className={`block text-sm font-semibold ${
-                      isDarkMode ? "text-white" : "text-blue-800"
-                    } mb-3 drop-shadow-lg flex items-center gap-2`}
-                  >
-                    <Users className="w-5 h-5" />
-                    Username
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      required
-                      className={`w-full pl-10 pr-4 py-3 ${
-                        isDarkMode
-                          ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
-                          : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
-                      } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner glow-input`}
-                      placeholder="Username"
-                      value={formData.username}
-                      onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                    />
-                    <Users
-                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-                        isDarkMode ? "text-slate-400" : "text-blue-500"
-                      }`}
-                    />
-                  </div>
-                </div>
+              <div>
+              <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
+                <Users className="w-5 h-5" />
+                Username
+              </label>
+              <input
+                type="text"
+                required
+                className={`w-full px-4 py-3 ${
+                  isDarkMode
+                    ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
+                    : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
+                } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner glow-input`}
+                placeholder="Username"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              />
+            </div>
 
                 {/* Email */}
-                <div className="relative">
-                  <label
-                    className={`block text-sm font-semibold ${
-                      isDarkMode ? "text-white" : "text-blue-800"
-                    } mb-3 drop-shadow-lg flex items-center gap-2`}
-                  >
+                <div>
+                  <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                     </svg>
                     Email
                   </label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      required
-                      className={`w-full pl-10 pr-4 py-3 ${
-                        isDarkMode
-                          ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
-                          : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
-                      } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner glow-input`}
-                      placeholder="titi@example.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    />
-                    <svg
-                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-                        isDarkMode ? "text-slate-400" : "text-blue-500"
-                      }`}
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
-                  </div>
+                  <input
+                    type="email"
+                    required
+                    className={`w-full px-4 py-3 ${
+                      isDarkMode
+                        ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
+                        : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner glow-input`}
+                    placeholder="titi@example.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Password */}
                 <div className="relative">
-                  <label
-                    className={`block text-sm font-semibold ${
-                      isDarkMode ? "text-white" : "text-blue-800"
-                    } mb-3 drop-shadow-lg flex items-center gap-2`}
-                  >
+                  <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                        clipRule="evenodd"
-                      />
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                     </svg>
                     Password
                   </label>
@@ -276,7 +241,7 @@ export default function RegisterPage() {
                     <input
                       type={showPassword ? "text" : "password"}
                       required
-                      className={`w-full pl-10 pr-10 py-3 ${
+                      className={`w-full pr-10 px-4 py-3 ${
                         isDarkMode
                           ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
                           : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
@@ -285,21 +250,6 @@ export default function RegisterPage() {
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     />
-                    <svg
-                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-                        isDarkMode ? "text-slate-400" : "text-blue-500"
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
@@ -309,27 +259,12 @@ export default function RegisterPage() {
                     >
                       {showPassword ? (
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                          />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                         </svg>
                       ) : (
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                       )}
                     </button>
