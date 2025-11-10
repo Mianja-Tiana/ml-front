@@ -35,7 +35,7 @@ export default function UserDashboard() {
   return (
     <div className={`min-h-screen flex ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'} transition-colors duration-300`}>
       
-      {/* === SIDEBAR FIXE === */}
+     
       <div className={`w-64 ${isDarkMode ? 'bg-slate-800' : 'bg-white'} border-r ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} flex flex-col`}>
         <div className="p-6 border-b border-slate-700">
           <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
@@ -84,7 +84,7 @@ export default function UserDashboard() {
         </div>
       </div>
 
-      {/* === CONTENU PRINCIPAL (sans fond gris) === */}
+      {}
       <div className="flex-1 ml-64">
         <div className="p-10">
           <div className="max-w-5xl mx-auto">

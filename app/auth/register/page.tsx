@@ -10,7 +10,7 @@ import { Crown, Users } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.telcopredict.live" ;  //"http://localhost:8000";
 
   const [formData, setFormData] = useState({
     username: "",
