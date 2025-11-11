@@ -178,7 +178,7 @@ export default function UserDashboard() {
             <Package className="w-7 h-7" />
             ChurnPredict
           </h1>
-          <p className="text-xs text-cyan-400 mt-1">ML Backend API</p>
+          <p className="text-xs text-cwhite mt-1">User dashboard</p>
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-1">
