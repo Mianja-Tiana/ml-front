@@ -10,7 +10,19 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, UserPlus, CheckCircle, XCircle, Shield } from "lucide-react";
+import { 
+  Loader2, 
+  UserPlus, 
+  CheckCircle, 
+  XCircle, 
+  Shield, 
+  Crown, 
+  UserCheck, 
+  Globe, 
+  Mail, 
+  Lock,
+  User 
+} from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -200,131 +212,137 @@ export default function AdminDashboard() {
             {activeSection === "models" && <ModelsList />}
             {activeSection === "logs" && <LogsList />}
 
-            {/* === PROFILE SECTION === */}
+            {/* === PROFILE SECTION → ULTRA LUXE === */}
             {activeSection === "profile" && profile && (
-              <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl">
-                <div className="p-10">
-                  <div className="flex items-center gap-6 mb-8">
-                    <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-4xl font-bold text-white shadow-lg">
+                <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl max-w-2xl mx-auto">
+                  <div className="p-12 text-center">
+                    <div className="w-36 h-36 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-8 flex items-center justify-center text-7xl font-bold text-white shadow-2xl ring-8 ring-slate-900/50">
                       {profile.username[0].toUpperCase()}
                     </div>
-                    <div>
-                      <h2 className="text-3xl font-bold text-white">Admin Profile</h2>
-                      <p className="text-slate-400">Welcome back, {profile.username}</p>
+                    <h1 className="text-5xl font-bold text-white">{profile.username}</h1>
+                    <p className="text-2xl text-blue-400 mt-4 flex items-center justify-center gap-3">
+                      <Shield className="w-8 h-8" />
+                      Super Administrateur
+                    </p>
+                    <div className="mt-10 space-y-4 text-left bg-slate-900/60 rounded-2xl p-8 border border-slate-700">
+                      <p className="text-slate-300 text-lg"><span className="text-slate-400">Email:</span> {profile.email || "Non défini"}</p>
+                      <p className="text-slate-300 text-lg"><span className="text-slate-400">Rôle:</span> <span className="text-blue-400 font-bold">Root Admin</span></p>
+                      <p className="text-slate-300 text-lg"><span className="text-slate-400">Connexion:</span> Dakar, Sénégal</p>
+                      <p className="text-slate-300 text-lg"><span className="text-slate-400">Heure locale:</span> {new Date().toLocaleString("fr-SN", { timeZone: "Africa/Dakar" })}</p>
                     </div>
                   </div>
+                </Card>
+              )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-lg">
-                    <div className="space-y-4">
-                      <div>
-                        <span className="text-slate-400">Username:</span>
-                        <p className="text-white font-semibold">{profile.username}</p>
-                      </div>
-                      <div>
-                        <span className="text-slate-400">Role:</span>
-                        <p className="inline-flex items-center gap-2 mt-2">
-                          <Shield className="w-5 h-5 text-blue-400" />
-                          <span className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full font-bold">
-                            Administrator
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            )}
-
-            {/* === CREATE ADMIN SECTION === */}
+            {/* === CREATE ADMIN SECTION → LUXE TOTAL === */}
             {activeSection === "create-admin" && (
-              <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl">
-                <div className="p-10">
-                  <div className="flex items-center gap-4 mb-8">
-                    <UserPlus className="w-10 h-10 text-blue-400" />
-                    <h2 className="text-3xl font-bold text-white">Create New Admin</h2>
+              <Card className="bg-slate-800/80 border-slate-700 backdrop-blur-2xl shadow-2xl max-w-2xl mx-auto">
+                <div className="p-12">
+                  <div className="text-center mb-10">
+                    <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mb-6 shadow-2xl">
+                      <UserPlus className="w-12 h-12 text-white" />
+                    </div>
+                    <h2 className="text-4xl font-bold text-white">Create New Admin</h2>
+                    <p className="text-slate-400 mt-4 text-lg">Give full system access to a new super admin</p>
                   </div>
 
                   {createSuccess && (
-                    <div className="mb-6 p-4 bg-green-900/30 border border-green-700/50 rounded-lg flex items-center gap-3">
-                      <CheckCircle className="w-6 h-6 text-green-400" />
-                      <p className="text-green-300 font-medium">{createSuccess}</p>
+                    <div className="mb-8 p-6 bg-green-900/50 border border-green-600/70 rounded-2xl flex items-center gap-4 animate-pulse">
+                      <CheckCircle className="w-12 h-12 text-green-400" />
+                      <div>
+                        <p className="text-green-300 font-bold text-xl">{createSuccess}</p>
+                        <p className="text-green-200">The admin can log in immediately</p>
+                      </div>
                     </div>
                   )}
 
                   {createError && (
-                    <div className="mb-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg flex items-center gap-3">
-                      <XCircle className="w-6 h-6 text-red-400" />
-                      <p className="text-red-300 font-medium">{createError}</p>
+                    <div className="mb-8 p-6 bg-red-900/50 border border-red-600/70 rounded-2xl flex items-center gap-4">
+                      <XCircle className="w-12 h-12 text-red-400" />
+                      <p className="text-red-300 font-medium text-lg">{createError}</p>
                     </div>
                   )}
 
-                  <form onSubmit={handleCreateAdmin} className="space-y-6 max-w-2xl">
-                    <div>
-                      <Label htmlFor="username" className="text-slate-300">Username</Label>
-                      <Input
-                        id="username"
-                        type="text"
-                        required
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        className="mt-2 bg-slate-900/50 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500"
-                        placeholder="admin123"
-                      />
-                    </div>
+                  <form onSubmit={handleCreateAdmin} className="space-y-8">
+                    <div className="space-y-6">
+                      <div>
+                        <Label htmlFor="username" className="text-slate-300 text-lg flex items-center gap-3">
+                          <User className="w-6 h-6 text-blue-400" />
+                          Username
+                        </Label>
+                        <Input
+                          id="username"
+                          type="text"
+                          required
+                          value={formData.username}
+                          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                          className="mt-3 bg-slate-900/70 border-slate-600 text-white text-lg py-7 placeholder-slate-500 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 transition-all rounded-xl"
+                          placeholder="admin_senegal2025"
+                        />
+                      </div>
 
-                    <div>
-                      <Label htmlFor="email" className="text-slate-300">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="mt-2 bg-slate-900/50 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500"
-                        placeholder="admin@telcopredict.live"
-                      />
-                    </div>
+                      <div>
+                        <Label htmlFor="email" className="text-slate-300 text-lg flex items-center gap-3">
+                          <Mail className="w-6 h-6 text-blue-400" />
+                          Email Address
+                        </Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          required
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="mt-3 bg-slate-900/70 border-slate-600 text-white text-lg py-7 placeholder-slate-500 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 rounded-xl"
+                          placeholder="admin@telcopredict.sn"
+                        />
+                      </div>
 
-                    <div>
-                      <Label htmlFor="password" className="text-slate-300">Password</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        required
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="mt-2 bg-slate-900/50 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500"
-                        placeholder="••••••••"
-                      />
-                    </div>
+                      <div>
+                        <Label htmlFor="password" className="text-slate-300 text-lg flex items-center gap-3">
+                          <Lock className="w-6 h-6 text-blue-400" />
+                          Password
+                        </Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          required
+                          value={formData.password}
+                          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                          className="mt-3 bg-slate-900/70 border-slate-600 text-white text-lg py-7 placeholder-slate-500 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 rounded-xl"
+                          placeholder="Minimum 6 characters"
+                        />
+                      </div>
 
-                    <div>
-                      <Label htmlFor="confirm" className="text-slate-300">Confirm Password</Label>
-                      <Input
-                        id="confirm"
-                        type="password"
-                        required
-                        value={formData.confirm_password}
-                        onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
-                        className="mt-2 bg-slate-900/50 border-slate-600 text-white placeholder-slate-500 focus:border-blue-500"
-                        placeholder="••••••••"
-                      />
+                      <div>
+                        <Label htmlFor="confirm" className="text-slate-300 text-lg flex items-center gap-3">
+                          <Lock className="w-6 h-6 text-blue-400" />
+                          Confirm Password
+                        </Label>
+                        <Input
+                          id="confirm"
+                          type="password"
+                          required
+                          value={formData.confirm_password}
+                          onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
+                          className="mt-3 bg-slate-900/70 border-slate-600 text-white text-lg py-7 placeholder-slate-500 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 rounded-xl"
+                        />
+                      </div>
                     </div>
 
                     <Button
                       type="submit"
                       disabled={createLoading}
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 hover:from-blue-700 hover:via-cyan-700 hover:to-blue-700 text-white font-bold text-2xl py-8 rounded-2xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-500 transform hover:scale-105"
                     >
                       {createLoading ? (
                         <>
-                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                          <Loader2 className="w-10 h-10 mr-4 animate-spin" />
                           Creating Admin...
                         </>
                       ) : (
                         <>
-                          <UserPlus className="w-5 h-5 mr-2" />
-                          Create Admin Account
+                          <Crown className="w-10 h-10 mr-4" />
+                          Create Administrator
                         </>
                       )}
                     </Button>

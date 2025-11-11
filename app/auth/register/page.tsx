@@ -1,23 +1,20 @@
 "use client";
-
 import type React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Crown, Users } from "lucide-react";
+import { Users, Mail, Lock } from "lucide-react";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.telcopredict.live" ;  //"http://localhost:8000";
-
+  const apiUrl = "https://api.telcopredict.live"; // Your real ML Backend
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
-    is_admin: true,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,17 +43,17 @@ export default function RegisterPage() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          confirm_password:formData.confirmPassword,
-          is_admin: formData.is_admin,
+          confirm_password: formData.confirmPassword,
+          // No is_admin → all new users are standard users
         }),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.detail || "Registration failed");
+        throw new Error(data.detail?.[0]?.msg || data.detail || "Registration failed");
       }
 
-      router.push("/auth/login");
+      router.push("/auth/login?success=Account+created");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -72,7 +69,7 @@ export default function RegisterPage() {
           : "bg-gradient-to-r from-blue-50 via-white to-blue-100"
       } overflow-hidden relative flex items-center justify-center p-4 transition-all duration-500`}
     >
-      {/* Arrière-plan animé */}
+      {/* Animated Background */}
       <div
         className={`absolute inset-0 ${
           isDarkMode
@@ -94,19 +91,12 @@ export default function RegisterPage() {
           isDarkMode ? "shadow-slate-500/20" : "shadow-blue-300/30"
         }`}
       ></div>
-      <div
-        className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 ${
-          isDarkMode
-            ? "bg-gradient-to-r from-blue-600/20 to-purple-600/20"
-            : "bg-gradient-to-r from-blue-300/30 to-blue-400/30"
-        } rounded-full blur-2xl animate-spin-slow opacity-50`}
-      ></div>
 
-      {/* Bouton Soleil / Lune */}
+      {/* Dark/Light Toggle */}
       <button
         onClick={toggleMode}
         className={`absolute top-4 right-4 p-3 rounded-full ${
-          isDarkMode ? "bg-slate-800 text-white-400" : "bg-blue-200 text-blue-800"
+          isDarkMode ? "bg-slate-800 text-white" : "bg-blue-200 text-blue-800"
         } shadow-lg hover:shadow-xl transition-all duration-300 z-20`}
         aria-label="Toggle theme"
       >
@@ -132,9 +122,9 @@ export default function RegisterPage() {
               isDarkMode
                 ? "bg-gradient-to-r from-blue-400 via-cyan-500 to-blue-600"
                 : "bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800"
-            } bg-clip-text text-transparent mb-4 drop-shadow-2xl animate-pulse-slow`}
+            } bg-clip-text text-transparent mb-4 drop-shadow-2xl`}
           >
-            Churn Prediction
+            ChurnPredict
           </h1>
           <p
             className={`text-lg ${isDarkMode ? "text-slate-300" : "text-blue-700"} drop-shadow-lg`}
@@ -144,11 +134,11 @@ export default function RegisterPage() {
         </div>
 
         <Card
-          className={`glass backdrop-blur-2xl ${
+          className={`backdrop-blur-2xl ${
             isDarkMode
               ? "bg-slate-900/50 border border-slate-700/60 shadow-blue-500/20"
               : "bg-white/70 border border-blue-300/60 shadow-blue-400/30"
-          } shadow-2xl rounded-3xl glow-effect`}
+          } shadow-2xl rounded-3xl`}
         >
           <div className="p-8 lg:p-12">
             <div className="mb-8">
@@ -168,9 +158,7 @@ export default function RegisterPage() {
               <div
                 className={`mb-6 p-4 ${
                   isDarkMode ? "bg-red-500/15 border-red-500/40" : "bg-red-100/70 border-red-300/40"
-                } border rounded-xl text-red-600 text-sm font-medium flex items-center gap-3 backdrop-blur-md shadow-lg ${
-                  isDarkMode ? "shadow-red-500/10" : "shadow-red-300/10"
-                }`}
+                } border rounded-xl text-red-600 text-sm font-medium flex items-center gap-3 backdrop-blur-md shadow-lg`}
               >
                 <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path
@@ -185,33 +173,30 @@ export default function RegisterPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               
-              <div>
-              <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
-                <Users className="w-5 h-5" />
-                Username
-              </label>
-              <input
-                type="text"
-                required
-                className={`w-full px-4 py-3 ${
-                  isDarkMode
-                    ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
-                    : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
-                } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner glow-input`}
-                placeholder="Username"
-                value={formData.username}
-                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-              />
-            </div>
+                {/* Username */}
+                <div>
+                  <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
+                    <Users className="w-5 h-5" />
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    className={`w-full px-4 py-3 ${
+                      isDarkMode
+                        ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
+                        : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner`}
+                    placeholder="yourname"
+                    value={formData.username}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                  />
+                </div>
 
                 {/* Email */}
                 <div>
                   <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
+                    <Mail className="w-5 h-5" />
                     Email
                   </label>
                   <input
@@ -221,8 +206,8 @@ export default function RegisterPage() {
                       isDarkMode
                         ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
                         : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
-                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner glow-input`}
-                    placeholder="titi@example.com"
+                    } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner`}
+                    placeholder="you@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
@@ -230,12 +215,10 @@ export default function RegisterPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               
+                {/* Password */}
                 <div className="relative">
                   <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                    </svg>
+                    <Lock className="w-5 h-5" />
                     Password
                   </label>
                   <div className="relative">
@@ -246,7 +229,7 @@ export default function RegisterPage() {
                         isDarkMode
                           ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
                           : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
-                      } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner glow-input`}
+                      } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner`}
                       placeholder="••••••••"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -274,48 +257,23 @@ export default function RegisterPage() {
 
                 {/* Confirm Password */}
                 <div className="relative">
-                  <label
-                    className={`block text-sm font-semibold ${
-                      isDarkMode ? "text-white" : "text-blue-800"
-                    } mb-3 drop-shadow-lg flex items-center gap-2`}
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path
-                        fillRule="evenodd"
-                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                  <label className={`block text-sm font-semibold ${isDarkMode ? "text-white" : "text-blue-800"} mb-3 drop-shadow-lg flex items-center gap-2`}>
+                    <Lock className="w-5 h-5" />
                     Confirm Password
                   </label>
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       required
-                      className={`w-full pl-10 pr-10 py-3 ${
+                      className={`w-full pr-10 px-4 py-3 ${
                         isDarkMode
                           ? "bg-slate-900/60 border-slate-700/60 text-white placeholder-slate-400"
                           : "bg-blue-50/70 border-blue-300/60 text-blue-800 placeholder-blue-500"
-                      } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-bl4-sm shadow-inner glow-input`}
+                      } border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-500 backdrop-blur-sm shadow-inner`}
                       placeholder="••••••••"
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     />
-                    <svg
-                      className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-                        isDarkMode ? "text-slate-400" : "text-blue-500"
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -325,27 +283,12 @@ export default function RegisterPage() {
                     >
                       {showConfirmPassword ? (
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-                          />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
                         </svg>
                       ) : (
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                       )}
                     </button>
@@ -353,63 +296,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-          
-              <div className="pt-6">
-                <label
-                  className={`block text-sm font-semibold mb-4 drop-shadow-lg ${
-                    isDarkMode ? "text-white" : "text-blue-800"
-                  }`}
-                >
-                  Choose Your Role
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, is_admin: false })}
-                    className={`p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-3 relative overflow-hidden group ${
-                      !formData.is_admin
-                        ? isDarkMode
-                          ? "border-blue-500 bg-blue-950/40 shadow-lg shadow-blue-500/20"
-                          : "border-blue-500 bg-blue-100/50 shadow-lg shadow-blue-400/30"
-                        : isDarkMode
-                        ? "border-slate-700 bg-slate-900/20 hover:border-blue-500/50 hover:bg-slate-900/40"
-                        : "border-blue-300 bg-blue-50/50 hover:border-blue-400/50 hover:bg-blue-100/60"
-                    }`}
-                  >
-                    <Users className={`w-8 h-8 ${!formData.is_admin ? "text-blue-400" : "text-slate-400"}`} />
-                    <div className="text-left">
-                      <p className={`font-bold ${isDarkMode ? "text-white" : "text-blue-800"}`}>Simple User</p>
-                      <p className={`text-xs ${isDarkMode ? "text-slate-300" : "text-blue-600"}`}>
-                        Create feedback & models
-                      </p>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, is_admin: true })}
-                    className={`p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-3 relative overflow-hidden group ${
-                      formData.is_admin
-                        ? isDarkMode
-                          ? "border-blue-400 bg-blue-950/50 shadow-lg shadow-blue-500/20"
-                          : "border-blue-500 bg-blue-100/60 shadow-lg shadow-blue-400/30"
-                        : isDarkMode
-                        ? "border-slate-700 bg-slate-900/20 hover:border-blue-400/50 hover:bg-slate-900/40"
-                        : "border-blue-300 bg-blue-50/50 hover:border-blue-400/50 hover:bg-blue-100/60"
-                    }`}
-                  >
-                    <Crown className={`w-8 h-8 ${formData.is_admin ? "text-blue-300" : "text-slate-400"}`} />
-                    <div className="text-left">
-                      <p className={`font-bold ${isDarkMode ? "text-white" : "text-blue-800"}`}>Admin User</p>
-                      <p className={`text-xs ${isDarkMode ? "text-slate-300" : "text-blue-600"}`}>
-                        Full system control
-                      </p>
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-            
+              {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={loading}
@@ -417,9 +304,7 @@ export default function RegisterPage() {
                   isDarkMode
                     ? "bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 hover:from-blue-600 hover:via-cyan-600 hover:to-blue-700"
                     : "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:from-blue-500 hover:via-blue-600 hover:to-blue-700"
-                } text-white font-bold py-3 rounded-lg transition-all duration-500 disabled:opacity-50 shadow-lg hover:shadow-2xl ${
-                  isDarkMode ? "hover:shadow-blue-500/30" : "hover:shadow-blue-400/30"
-                } glow-button`}
+                } text-white font-bold py-3 rounded-lg transition-all duration-500 disabled:opacity-50 shadow-lg hover:shadow-2xl`}
               >
                 {loading ? (
                   <div className="flex items-center gap-2">
