@@ -40,23 +40,33 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
+
+      console.log(data);
+
       localStorage.setItem("token", data.access_token);
 
       const userRes = await fetch(`${apiUrl}/api/users/me`, {
-        headers: { Authorization: `Bearer ${data.access_token}` },
-      });
+      headers: { Authorization: `Bearer ${data.access_token}` },
+        });
 
-      if (userRes.ok) {
+        if (!userRes.ok) {
+          throw new Error("Failed to fetch user info: " + userRes.status);
+        }
+
         const userData = await userRes.json();
-        const isAdmin =
-          userData.roles &&
-          userData.roles.some((r: any) => r.role?.name === "admin");
-        const dashboard = isAdmin ? "/dashboard/admin" : "/dashboard/user";
+        console.log("User data from API:", userData);
+
+        // Use the role returned directly from the API
+        const { username, role } = userData;
+
+        // Check role and redirect
+        const dashboard = role === "admin" ? "/dashboard/admin" : "/dashboard/user";
+        
         router.push(dashboard);
-      }
-      
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+
+      } catch (err) {
+        console.error("Error fetching user info:", err);
+        setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }

@@ -17,7 +17,7 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
-    isAdmin: false,
+    is_admin: true,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,7 +46,8 @@ export default function RegisterPage() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          is_admin: formData.isAdmin,
+          confirm_password:formData.confirmPassword,
+          is_admin: formData.is_admin,
         }),
       });
 
@@ -364,9 +365,9 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, isAdmin: false })}
+                    onClick={() => setFormData({ ...formData, is_admin: false })}
                     className={`p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-3 relative overflow-hidden group ${
-                      !formData.isAdmin
+                      !formData.is_admin
                         ? isDarkMode
                           ? "border-blue-500 bg-blue-950/40 shadow-lg shadow-blue-500/20"
                           : "border-blue-500 bg-blue-100/50 shadow-lg shadow-blue-400/30"
@@ -375,7 +376,7 @@ export default function RegisterPage() {
                         : "border-blue-300 bg-blue-50/50 hover:border-blue-400/50 hover:bg-blue-100/60"
                     }`}
                   >
-                    <Users className={`w-8 h-8 ${!formData.isAdmin ? "text-blue-400" : "text-slate-400"}`} />
+                    <Users className={`w-8 h-8 ${!formData.is_admin ? "text-blue-400" : "text-slate-400"}`} />
                     <div className="text-left">
                       <p className={`font-bold ${isDarkMode ? "text-white" : "text-blue-800"}`}>Simple User</p>
                       <p className={`text-xs ${isDarkMode ? "text-slate-300" : "text-blue-600"}`}>
@@ -386,9 +387,9 @@ export default function RegisterPage() {
 
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, isAdmin: true })}
+                    onClick={() => setFormData({ ...formData, is_admin: true })}
                     className={`p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-3 relative overflow-hidden group ${
-                      formData.isAdmin
+                      formData.is_admin
                         ? isDarkMode
                           ? "border-blue-400 bg-blue-950/50 shadow-lg shadow-blue-500/20"
                           : "border-blue-500 bg-blue-100/60 shadow-lg shadow-blue-400/30"
@@ -397,7 +398,7 @@ export default function RegisterPage() {
                         : "border-blue-300 bg-blue-50/50 hover:border-blue-400/50 hover:bg-blue-100/60"
                     }`}
                   >
-                    <Crown className={`w-8 h-8 ${formData.isAdmin ? "text-blue-300" : "text-slate-400"}`} />
+                    <Crown className={`w-8 h-8 ${formData.is_admin ? "text-blue-300" : "text-slate-400"}`} />
                     <div className="text-left">
                       <p className={`font-bold ${isDarkMode ? "text-white" : "text-blue-800"}`}>Admin User</p>
                       <p className={`text-xs ${isDarkMode ? "text-slate-300" : "text-blue-600"}`}>
