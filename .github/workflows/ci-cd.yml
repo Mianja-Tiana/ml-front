@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 env:
-  IMAGE_NAME: ejahdilan/ml-app
+  IMAGE_NAME: ejahdilan/ml-app-deploy
   COMPOSE_FILE: ./docker-compose.yml 
   REMOTE_DEPLOY_DIR: /home/churnsvc/ml-app-deploy
   LATEST_TAG: v8
