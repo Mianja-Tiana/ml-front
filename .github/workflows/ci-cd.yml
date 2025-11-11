@@ -13,7 +13,7 @@ permissions:
 env:
   IMAGE_NAME: ejahdilan/ml-app
   COMPOSE_FILE: ./docker-compose.yml 
-  REMOTE_DEPLOY_DIR: /home/azureuser/ml-app-deploy
+  REMOTE_DEPLOY_DIR: /home/churnsvc/ml-app-deploy
   LATEST_TAG: v8
 
 jobs:
