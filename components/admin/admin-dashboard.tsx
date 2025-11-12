@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import UsersList from "@/components/admin/users-list";
 import FeedbackList from "@/components/admin/feedback-list";
-import ModelsList from "@/components/admin/models-list";
 import LogsList from "@/components/admin/logs-list";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,19 +16,19 @@ import {
   XCircle, 
   Shield, 
   Crown, 
-  UserCheck, 
-  Globe, 
+  User, 
   Mail, 
   Lock,
-  User 
+  ArrowLeft,
+  Check
 } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const apiUrl = "https://api.telcopredict.live";
 
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeSection, setActiveSection] = useState("users");
+  const [previousSection, setPreviousSection] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
 
@@ -42,9 +41,7 @@ export default function AdminDashboard() {
   });
   const [createLoading, setCreateLoading] = useState(false);
   const [createError, setCreateError] = useState("");
-  const [createSuccess, setCreateSuccess] = useState("");
-
-  const toggleMode = () => setIsDarkMode(!isDarkMode);
+  const [createSuccess, setCreateSuccess] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -73,7 +70,7 @@ export default function AdminDashboard() {
           localStorage.removeItem("token");
           router.replace("/auth/login");
         }
-      } catch (err) {
+      } catch {
         localStorage.removeItem("token");
         router.replace("/auth/login");
       } finally {
@@ -92,8 +89,14 @@ export default function AdminDashboard() {
   const handleCreateAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
     setCreateError("");
-    setCreateSuccess("");
+    setCreateSuccess(false);
     setCreateLoading(true);
+
+    if (!formData.username || !formData.email || !formData.password || !formData.confirm_password) {
+      setCreateError("All fields are required");
+      setCreateLoading(false);
+      return;
+    }
 
     if (formData.password !== formData.confirm_password) {
       setCreateError("Passwords do not match");
@@ -109,7 +112,7 @@ export default function AdminDashboard() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${apiUrl}/auth/register`, {
+      const res = await fetch(`${apiUrl}/admin/create-admin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,22 +122,38 @@ export default function AdminDashboard() {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          is_admin: true,
+          confirm_password: formData.confirm_password,
         }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        setCreateSuccess("Admin created successfully!");
+        setCreateSuccess(true);
         setFormData({ username: "", email: "", password: "", confirm_password: "" });
       } else {
-        const err = await res.json();
-        setCreateError(err.detail || "Failed to create admin");
+        const msg = data.detail?.[0]?.msg || data.detail || "Failed to create admin";
+        setCreateError(msg);
       }
-    } catch (err) {
+    } catch {
       setCreateError("Network error. Please try again.");
     } finally {
       setCreateLoading(false);
     }
+  };
+
+  const goBack = () => {
+    if (previousSection) {
+      setActiveSection(previousSection);
+      setPreviousSection(null);
+    }
+  };
+
+  const openCreateAdmin = () => {
+    setPreviousSection(activeSection);
+    setActiveSection("create-admin");
+    setCreateSuccess(false);
+    setCreateError("");
   };
 
   if (loading) {
@@ -153,7 +172,6 @@ export default function AdminDashboard() {
   const menuItems = [
     { id: "users", label: "Users", icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" },
     { id: "feedback", label: "Feedback", icon: "M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" },
-    { id: "models", label: "ML Models", icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" },
     { id: "logs", label: "Prediction Logs", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
     { id: "create-admin", label: "Create Admin", icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" },
     { id: "profile", label: "Profile", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
@@ -174,7 +192,7 @@ export default function AdminDashboard() {
           {menuItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveSection(item.id)}
+              onClick={item.id === "create-admin" ? openCreateAdmin : () => setActiveSection(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                 activeSection === item.id
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
@@ -189,7 +207,7 @@ export default function AdminDashboard() {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-slate-700 space-y-3">
+        <div className="p-4 border-t border-slate-700">
           <button
             onClick={logout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-slate-700 transition"
@@ -209,33 +227,63 @@ export default function AdminDashboard() {
 
             {activeSection === "users" && <UsersList />}
             {activeSection === "feedback" && <FeedbackList />}
-            {activeSection === "models" && <ModelsList />}
             {activeSection === "logs" && <LogsList />}
 
-            {/* === PROFILE SECTION → ULTRA LUXE === */}
+            {/* === PROFILE === */}
             {activeSection === "profile" && profile && (
-                <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl max-w-2xl mx-auto">
-                  <div className="p-12 text-center">
-                    <div className="w-36 h-36 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-8 flex items-center justify-center text-7xl font-bold text-white shadow-2xl ring-8 ring-slate-900/50">
-                      {profile.username[0].toUpperCase()}
-                    </div>
-                    <h1 className="text-5xl font-bold text-white">{profile.username}</h1>
-                    <p className="text-2xl text-blue-400 mt-4 flex items-center justify-center gap-3">
-                      <Shield className="w-8 h-8" />
-                      Super Administrateur
-                    </p>
-                    <div className="mt-10 space-y-4 text-left bg-slate-900/60 rounded-2xl p-8 border border-slate-700">
-                      <p className="text-slate-300 text-lg"><span className="text-slate-400">Email:</span> {profile.email || "Non défini"}</p>
-                      <p className="text-slate-300 text-lg"><span className="text-slate-400">Rôle:</span> <span className="text-blue-400 font-bold">Root Admin</span></p>
-                      <p className="text-slate-300 text-lg"><span className="text-slate-400">Connexion:</span> Dakar, Sénégal</p>
-                      <p className="text-slate-300 text-lg"><span className="text-slate-400">Heure locale:</span> {new Date().toLocaleString("fr-SN", { timeZone: "Africa/Dakar" })}</p>
-                    </div>
+              <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl max-w-2xl mx-auto">
+                <div className="p-12 text-center">
+                  <div className="w-36 h-36 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-8 flex items-center justify-center text-7xl font-bold text-white shadow-2xl ring-8 ring-slate-900/50">
+                    {profile.username[0].toUpperCase()}
                   </div>
-                </Card>
-              )}
+                  <h1 className="text-5xl font-bold text-white">{profile.username}</h1>
+                  <p className="text-2xl text-blue-400 mt-4 flex items-center justify-center gap-3">
+                    <Shield className="w-8 h-8" />
+                    Super Administrateur
+                  </p>
+                  <div className="mt-10 space-y-4 text-left bg-slate-900/60 rounded-2xl p-8 border border-slate-700">
+                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Email:</span> {profile.email || "Non défini"}</p>
+                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Rôle:</span> <span className="text-blue-400 font-bold">Root Admin</span></p>
+                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Connexion:</span> Dakar, Sénégal</p>
+                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Heure locale:</span> {new Date().toLocaleString("fr-SN", { timeZone: "Africa/Dakar" })}</p>
+                  </div>
+                </div>
+              </Card>
+            )}
 
-            {/* === CREATE ADMIN SECTION → LUXE TOTAL === */}
-            {activeSection === "create-admin" && (
+            {/* === SUCCESS PAGE – PROPRE, SANS CLIGNOTEMENT === */}
+            {activeSection === "create-admin" && createSuccess && (
+              <Card className="bg-slate-800/80 border-slate-700 backdrop-blur-2xl shadow-2xl max-w-2xl mx-auto">
+                <div className="p-16 text-center">
+                  {/* Flèche verte FIXE */}
+                  <div className="w-24 h-24 bg-emerald-600 rounded-full mx-auto mb-8 flex items-center justify-center shadow-xl">
+                    <Check className="w-14 h-14 text-white" />
+                  </div>
+
+                  <h2 className="text-4xl font-bold text-white mb-4">
+                    Admin Created Successfully
+                  </h2>
+                  <p className="text-xl text-slate-300 mb-3">
+                    <span className="font-bold text-emerald-400">{formData.username}</span>  <span className="font-bold text-blue-400"></span>
+                  </p>
+                  <p className="text-lg text-slate-400 mb-12">
+                    Full system access granted.
+                  </p>
+
+                  {/* BOUTON BLEU NUIT SIMPLE */}
+                  <Button
+                    onClick={goBack}
+                    className="bg-slate-800 hover:bg-slate-700 text-white font-bold text-lg px-12 py-6 rounded-xl shadow-lg flex items-center gap-3 mx-auto"
+                  >
+                    <ArrowLeft className="w-6 h-6" />
+                    Return
+                  </Button>
+                </div>
+              </Card>
+            )}
+
+            {/* === CREATE ADMIN FORM === */}
+            {activeSection === "create-admin" && !createSuccess && (
               <Card className="bg-slate-800/80 border-slate-700 backdrop-blur-2xl shadow-2xl max-w-2xl mx-auto">
                 <div className="p-12">
                   <div className="text-center mb-10">
@@ -245,16 +293,6 @@ export default function AdminDashboard() {
                     <h2 className="text-4xl font-bold text-white">Create New Admin</h2>
                     <p className="text-slate-400 mt-4 text-lg">Give full system access to a new super admin</p>
                   </div>
-
-                  {createSuccess && (
-                    <div className="mb-8 p-6 bg-green-900/50 border border-green-600/70 rounded-2xl flex items-center gap-4 animate-pulse">
-                      <CheckCircle className="w-12 h-12 text-green-400" />
-                      <div>
-                        <p className="text-green-300 font-bold text-xl">{createSuccess}</p>
-                        <p className="text-green-200">The admin can log in immediately</p>
-                      </div>
-                    </div>
-                  )}
 
                   {createError && (
                     <div className="mb-8 p-6 bg-red-900/50 border border-red-600/70 rounded-2xl flex items-center gap-4">
@@ -277,7 +315,7 @@ export default function AdminDashboard() {
                           value={formData.username}
                           onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                           className="mt-3 bg-slate-900/70 border-slate-600 text-white text-lg py-7 placeholder-slate-500 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 transition-all rounded-xl"
-                          placeholder="admin_senegal2025"
+                          placeholder="Username"
                         />
                       </div>
 
@@ -309,7 +347,7 @@ export default function AdminDashboard() {
                           value={formData.password}
                           onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                           className="mt-3 bg-slate-900/70 border-slate-600 text-white text-lg py-7 placeholder-slate-500 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 rounded-xl"
-                          placeholder="Minimum 6 characters"
+                          placeholder="........."
                         />
                       </div>
 
@@ -325,14 +363,16 @@ export default function AdminDashboard() {
                           value={formData.confirm_password}
                           onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
                           className="mt-3 bg-slate-900/70 border-slate-600 text-white text-lg py-7 placeholder-slate-500 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/20 rounded-xl"
+                          placeholder="........."
                         />
+
                       </div>
                     </div>
 
                     <Button
                       type="submit"
                       disabled={createLoading}
-                      className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 hover:from-blue-700 hover:via-cyan-700 hover:to-blue-700 text-white font-bold text-2xl py-8 rounded-2xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-500 transform hover:scale-105"
+                      className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 hover:from-blue-700 hover:via-cyan-700 hover:to-blue-700 text-white font-bold text-2xl py-8 rounded-2xl shadow-2xl hover:shadow-cyan-500/50 transition-all duration-500"
                     >
                       {createLoading ? (
                         <>

@@ -40,7 +40,7 @@ export default function SubmitFeedback() {
 
       const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.telcopredict.live";
 
-      const res = await fetch(`${BACKEND_URL}/api/feedback`, {
+      const res = await fetch(`${BACKEND_URL}/api/feedback/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export default function SubmitFeedback() {
       setIsCorrect(null);
       setComment("");
       
-      // Auto-hide success after 5s
+      
       setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Network error");
