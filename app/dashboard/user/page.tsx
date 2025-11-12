@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, User, MessageSquare, History, Trash2, Phone, Info } from "lucide-react";
+import { Loader2, User, MessageSquare, History, Trash2, Phone, Info, LogOut } from "lucide-react";
 import CreateFeedback from "@/components/user/create-feedback";
 
 export default function UserDashboard() {
@@ -43,13 +43,12 @@ export default function UserDashboard() {
     MadeCallToRetentionTeam: "No",
     ReferralsMadeBySubscriber: 0,
     CreditRating: "Good",
-    IncomeGroup: "", 
+    IncomeGroup: "",
     Occupation: "",
     PrizmCode: "",
     TotalCalls: 0
   });
 
-  // Descriptions Kaggle Cell2Cell (in English)
   const columnDescriptions: Record<string, string> = {
     MonthlyRevenue: "Monthly revenue in dollars",
     MonthlyMinutes: "Total monthly minutes used",
@@ -239,9 +238,10 @@ export default function UserDashboard() {
       <div className="w-64 bg-slate-800 border-r border-slate-700 flex flex-col">
         <div className="p-6 border-b border-slate-700">
           <h1 className="text-2xl font-bold text-blue-400 flex items-center gap-2">
-            <User className="w-7 h-7" />
+            <User className="w-6 h-6" />
             ChurnPredict
           </h1>
+          <p className="text-xs text-slate-400 mt-1">User Portal</p>
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-1">
@@ -263,15 +263,20 @@ export default function UserDashboard() {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-slate-700">
+        <div className="p-4 border-t border-slate-700 flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg">
+            {user.username[0].toUpperCase()}
+          </div>
+          <div className="flex-1">
+            <p className="text-sm text-slate-300 font-medium">{user.username}</p>
+            <p className="text-xs text-slate-500">User</p>
+          </div>
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-slate-700 transition"
+            className="text-red-400 hover:text-red-300 transition"
+            title="Logout"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            <span>Logout</span>
+            <LogOut className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -282,20 +287,47 @@ export default function UserDashboard() {
           <div className="max-w-7xl mx-auto">
 
             {/* === PROFILE === */}
-            {activeSection === "profile" && user && (
-              <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl max-w-2xl mx-auto">
-                <div className="p-12 text-center">
-                  <div className="w-36 h-36 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full mx-auto mb-8 flex items-center justify-center text-7xl font-bold text-white shadow-2xl ring-8 ring-slate-900/50">
-                    {user.username[0].toUpperCase()}
+            {activeSection === "profile" && (
+              <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl max-w-3xl mx-auto">
+                <div className="p-10">
+                  <div className="flex items-center gap-6 mb-8">
+                    <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-5xl font-bold text-white shadow-xl">
+                      {user.username[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <h1 className="text-3xl font-bold text-white">Welcome back,</h1>
+                      <p className="text-2xl text-blue-400">{user.username}</p>
+                      <p className="text-slate-400">Personal Account</p>
+                    </div>
                   </div>
-                  <h1 className="text-5xl font-bold text-white">{user.username}</h1>
-                  <p className="text-2xl text-blue-400 mt-4 flex items-center justify-center gap-3">
-                    <User className="w-8 h-8" />
-                    Personal Account
-                  </p>
-                  <div className="mt-10 space-y-4 text-left bg-slate-900/60 rounded-2xl p-8 border border-slate-700">
-                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Email:</span> {user.email}</p>
-                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Local Time:</span> {new Date().toLocaleString("en-US", { timeZone: "Africa/Dakar" })}</p>
+
+                  <div className="grid md:grid-cols-2 gap-6 mb-10">
+                    <Card className="bg-slate-900/50 border-slate-700 p-6">
+                      <h3 className="text-lg font-semibold text-white mb-4">Account Information</h3>
+                      <div className="space-y-3 text-sm">
+                        <p className="text-slate-300"><span className="text-slate-400">Username:</span> {user.username}</p>
+                        <p className="text-slate-300"><span className="text-slate-400">Email:</span> {user.email}</p>
+                        <p className="text-slate-300"><span className="text-slate-400">Role:</span> User</p>
+                      </div>
+                    </Card>
+
+                    <Card className="bg-slate-900/50 border-slate-700 p-6">
+                      <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+                      <div className="space-y-3">
+                        <Button
+                          onClick={() => setActiveSection("predict")}
+                          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium"
+                        >
+                          Predict Churn
+                        </Button>
+                        <Button
+                          onClick={() => setActiveSection("feedback")}
+                          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium"
+                        >
+                          Submit Feedback
+                        </Button>
+                      </div>
+                    </Card>
                   </div>
                 </div>
               </Card>
@@ -305,12 +337,12 @@ export default function UserDashboard() {
             {activeSection === "predict" && (
               <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl">
                 <div className="p-10">
-                  <h2 className="text-3xl font-bold text-white mb-8">Manual Churn Prediction</h2>
+                  <h2 className="text-3xl font-bold text-white mb-8">Predict Churn</h2>
                   {errorMsg && <div className="mb-6 p-4 bg-red-900/30 border border-red-600 rounded-lg text-red-300">{errorMsg}</div>}
                   {result && (
                     <div className="mb-8 p-6 bg-slate-900/50 rounded-xl border border-slate-600">
                       <p className="text-2xl font-bold text-white">
-                        {result.prediction === 1 ? "High Churn Risk" : "Loyal Customer"}
+                        {result.prediction === 1 ? "Churn Probable" : "Loyal Customer"}
                       </p>
                       <p className="text-lg text-slate-300">Probability: {(result.probability * 100).toFixed(1)}%</p>
                     </div>
@@ -327,7 +359,6 @@ export default function UserDashboard() {
                             <Info className="w-3 h-3 text-slate-500" />
                           </Label>
 
-                          {/* Tooltip */}
                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-slate-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
                             {columnDescriptions[key]}
                           </div>
@@ -368,7 +399,7 @@ export default function UserDashboard() {
                     })}
                     <div className="col-span-full">
                       <Button type="submit" disabled={predictLoading} className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-6 rounded-xl">
-                        {predictLoading ? "Predicting..." : "Predict Churn"}
+                        {predictLoading ? "Predicting..." : "Predict"}
                       </Button>
                     </div>
                   </form>
@@ -441,6 +472,7 @@ export default function UserDashboard() {
                 </div>
               </Card>
             )}
+
             {/* === FEEDBACK === */}
             {activeSection === "feedback" && <CreateFeedback />}
 
