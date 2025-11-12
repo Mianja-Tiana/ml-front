@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Shield, User, MessageSquare, History, Trash2, Phone, Info } from "lucide-react";
+import { Loader2, User, MessageSquare, History, Trash2, Phone, Info } from "lucide-react";
 import CreateFeedback from "@/components/user/create-feedback";
 
 export default function UserDashboard() {
@@ -49,7 +49,7 @@ export default function UserDashboard() {
     TotalCalls: 0
   });
 
-  // Descriptions Kaggle Cell2Cell
+  // Descriptions Kaggle Cell2Cell (in English)
   const columnDescriptions: Record<string, string> = {
     MonthlyRevenue: "Monthly revenue in dollars",
     MonthlyMinutes: "Total monthly minutes used",
@@ -76,7 +76,6 @@ export default function UserDashboard() {
     TotalCalls: "Total calls made"
   };
 
- 
   const dropdownFields = {
     RespondsToMailOffers: ["No", "Yes"],
     MadeCallToRetentionTeam: ["No", "Yes"],
@@ -240,7 +239,7 @@ export default function UserDashboard() {
       <div className="w-64 bg-slate-800 border-r border-slate-700 flex flex-col">
         <div className="p-6 border-b border-slate-700">
           <h1 className="text-2xl font-bold text-blue-400 flex items-center gap-2">
-            <Shield className="w-7 h-7" />
+            <User className="w-7 h-7" />
             ChurnPredict
           </h1>
         </div>
@@ -292,11 +291,11 @@ export default function UserDashboard() {
                   <h1 className="text-5xl font-bold text-white">{user.username}</h1>
                   <p className="text-2xl text-blue-400 mt-4 flex items-center justify-center gap-3">
                     <User className="w-8 h-8" />
-                    Utilisateur
+                    Personal Account
                   </p>
                   <div className="mt-10 space-y-4 text-left bg-slate-900/60 rounded-2xl p-8 border border-slate-700">
                     <p className="text-slate-300 text-lg"><span className="text-slate-400">Email:</span> {user.email}</p>
-                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Heure locale:</span> {new Date().toLocaleString("fr-SN", { timeZone: "Africa/Dakar" })}</p>
+                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Local Time:</span> {new Date().toLocaleString("en-US", { timeZone: "Africa/Dakar" })}</p>
                   </div>
                 </div>
               </Card>
@@ -415,7 +414,7 @@ export default function UserDashboard() {
                       {predictions.map((pred) => {
                         const date = pred.created_at ? new Date(pred.created_at) : null;
                         const formattedDate = date && !isNaN(date.getTime()) 
-                          ? date.toLocaleString("fr-SN", { timeZone: "Africa/Dakar" }) 
+                          ? date.toLocaleString("en-US", { timeZone: "Africa/Dakar" }) 
                           : "Unknown date";
 
                         return (
