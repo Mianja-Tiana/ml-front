@@ -59,7 +59,7 @@ export default function LoginPage() {
         // Use the role returned directly from the API
         const { username, role } = userData;
 
-        // Check role and redirect
+        
         const dashboard = role === "admin" ? "/dashboard/admin" : "/dashboard/user";
         
         router.push(dashboard);

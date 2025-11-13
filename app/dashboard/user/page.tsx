@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, User, MessageSquare, History, Trash2, Phone, Info, LogOut } from "lucide-react";
-import CreateFeedback from "@/components/user/create-feedback";
+import { Loader2, User, History, Trash2, Phone, Info, LogOut, Check, X, CheckCircle2 } from "lucide-react";
 
 export default function UserDashboard() {
   const router = useRouter();
@@ -22,6 +21,7 @@ export default function UserDashboard() {
   const [sessionPredictLoading, setSessionPredictLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     MonthlyRevenue: 0,
@@ -69,9 +69,9 @@ export default function UserDashboard() {
     MadeCallToRetentionTeam: "Made call to retention team? (Yes/No)",
     ReferralsMadeBySubscriber: "Refer and win",
     CreditRating: "Credit rating (Excellent/Good/Fair/Poor)",
-    IncomeGroup: "Income group (enter any text, e.g., Low, Medium, High, etc.)",
-    Occupation: "Occupation category (free text)",
-    PrizmCode: "PRIZM code (geodemographic segmentation, free text)",
+    IncomeGroup: "Income group (number 1 to 9)",
+    Occupation: "Occupation category",
+    PrizmCode: "PRIZM code (geodemographic segmentation)",
     TotalCalls: "Total calls made"
   };
 
@@ -206,6 +206,35 @@ export default function UserDashboard() {
     }
   };
 
+  // FEEDBACK CORRIGÉ → API EXACTE
+  const sendFeedback = async (predictionId: string, isCorrect: boolean) => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${apiUrl}/api/feedback/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          prediction_id: Number(predictionId),
+          correct: isCorrect,
+          comment: "", // Optionnel
+        }),
+      });
+
+      if (res.ok) {
+        setFeedbackMessage("Feedback envoyé !");
+        setTimeout(() => setFeedbackMessage(null), 3000);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.detail || "Erreur lors de l'envoi du feedback");
+      }
+    } catch {
+      alert("Network error");
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     router.replace("/auth/login");
@@ -229,7 +258,6 @@ export default function UserDashboard() {
     { id: "predict", label: "Predict Churn", icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" },
     { id: "session", label: "From Call", icon: "M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" },
     { id: "history", label: "History", icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" },
-    { id: "feedback", label: "Feedback", icon: "M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" },
   ];
 
   return (
@@ -319,12 +347,6 @@ export default function UserDashboard() {
                           className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium"
                         >
                           Predict Churn
-                        </Button>
-                        <Button
-                          onClick={() => setActiveSection("feedback")}
-                          className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-medium"
-                        >
-                          Submit Feedback
                         </Button>
                       </div>
                     </Card>
@@ -433,11 +455,19 @@ export default function UserDashboard() {
               </Card>
             )}
 
-            {/* === HISTORY === */}
+            {/* === HISTORY + FEEDBACK (Check / X) === */}
             {activeSection === "history" && (
               <Card className="bg-slate-800/70 border-slate-700 backdrop-blur-xl shadow-2xl">
                 <div className="p-8">
                   <h2 className="text-3xl font-bold text-white mb-6">Prediction History</h2>
+
+                  {feedbackMessage && (
+                    <div className="mb-4 p-3 bg-green-900/50 border border-green-600 rounded-lg text-green-300 flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5" />
+                      {feedbackMessage}
+                    </div>
+                  )}
+
                   {predictions.length === 0 ? (
                     <p className="text-slate-400 text-center py-12">No predictions yet</p>
                   ) : (
@@ -456,14 +486,39 @@ export default function UserDashboard() {
                               </p>
                               <p className="text-sm text-slate-400">{formattedDate}</p>
                             </div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => deletePrediction(pred.id)}
-                              className="text-red-400 hover:bg-red-900/30"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                            <div className="flex gap-2">
+                              {/* Check : Correct */}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => sendFeedback(pred.id, true)}
+                                className="text-green-400 hover:bg-green-900/30"
+                                title="Correct"
+                              >
+                                <Check className="w-5 h-5" />
+                              </Button>
+
+                              {/* X : Incorrect */}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => sendFeedback(pred.id, false)}
+                                className="text-red-400 hover:bg-red-900/30"
+                                title="Incorrect"
+                              >
+                                <X className="w-5 h-5" />
+                              </Button>
+
+                              {/* Delete */}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => deletePrediction(pred.id)}
+                                className="text-red-400 hover:bg-red-900/30"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
                           </div>
                         );
                       })}
@@ -472,9 +527,6 @@ export default function UserDashboard() {
                 </div>
               </Card>
             )}
-
-            {/* === FEEDBACK === */}
-            {activeSection === "feedback" && <CreateFeedback />}
 
           </div>
         </div>
