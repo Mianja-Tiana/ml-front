@@ -206,7 +206,7 @@ export default function UserDashboard() {
     }
   };
 
-  // FEEDBACK CORRIGÉ → API EXACTE
+  
   const sendFeedback = async (predictionId: string, isCorrect: boolean) => {
     const token = localStorage.getItem("token");
     try {
@@ -219,7 +219,7 @@ export default function UserDashboard() {
         body: JSON.stringify({
           prediction_id: Number(predictionId),
           correct: isCorrect,
-          comment: "", // Optionnel
+          comment: "", 
         }),
       });
 

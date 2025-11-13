@@ -239,13 +239,13 @@ export default function AdminDashboard() {
                   <h1 className="text-5xl font-bold text-white">{profile.username}</h1>
                   <p className="text-2xl text-blue-400 mt-4 flex items-center justify-center gap-3">
                     <Shield className="w-8 h-8" />
-                    Super Administrateur
+                    Super Administrator
                   </p>
                   <div className="mt-10 space-y-4 text-left bg-slate-900/60 rounded-2xl p-8 border border-slate-700">
-                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Email:</span> {profile.email || "Non défini"}</p>
-                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Rôle:</span> <span className="text-blue-400 font-bold">Root Admin</span></p>
+                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Email:</span> {profile.email || ""}</p>
+                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Role:</span> <span className="text-blue-400 font-bold">Root Admin</span></p>
                     <p className="text-slate-300 text-lg"><span className="text-slate-400">Connexion:</span> Dakar, Sénégal</p>
-                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Heure locale:</span> {new Date().toLocaleString("fr-SN", { timeZone: "Africa/Dakar" })}</p>
+                    <p className="text-slate-300 text-lg"><span className="text-slate-400">Local Time:</span> {new Date().toLocaleString("fr-SN", { timeZone: "Africa/Dakar" })}</p>
                   </div>
                 </div>
               </Card>
